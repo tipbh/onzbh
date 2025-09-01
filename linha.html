@@ -3,306 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linha 5104 - Centro / Barreiro | BHTrans</title>
-    <meta name="description" content="Horários, itinerário e informações da linha 5104 Centro / Barreiro da BHTrans. Consulte pontos de parada e horários atualizados.">
+    <title>Linha Detalhes | BH Ônibus</title>
+    <meta name="description" content="Horários, itinerário e informações de linhas de ônibus da BHTrans e DER-MG.">
     
-     Tailwind CSS 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            // Configurações do tema escuro para esta página
             theme: {
                 extend: {
                     colors: {
-                        background: '#ffffff',
-                        foreground: '#475569',
-                        card: '#ecfeff',
-                        'card-foreground': '#475569',
+                        background: '#0a0a0a',
+                        foreground: '#ffffff',
+                        card: '#1a1a1a',
+                        'card-foreground': '#ffffff',
                         primary: '#164e63',
                         'primary-foreground': '#ffffff',
-                        secondary: '#f59e0b',
+                        secondary: '#2563eb',
                         'secondary-foreground': '#ffffff',
                         muted: '#f5f5f5',
                         'muted-foreground': '#374151',
                         accent: '#f59e0b',
                         'accent-foreground': '#ffffff',
-                        border: '#d1d5db'
+                        border: '#333333'
                     }
                 }
             }
         }
     </script>
     
-     JSON-LD Schema for Bus Line 
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "BusTrip",
-        "name": "Linha 5104 - Centro / Barreiro",
-        "description": "Linha de ônibus conectando Centro e Barreiro via Av. Amazonas",
+        "name": "Linha de Ônibus",
         "provider": {
-            "@type": "Organization",
-            "name": "BHTrans"
-        },
-        "busNumber": "5104",
-        "departureTime": "05:30",
-        "arrivalTime": "23:45",
-        "departureLocation": {
             "@type": "BusStation",
-            "name": "Terminal Centro"
-        },
-        "arrivalLocation": {
-            "@type": "BusStation", 
-            "name": "Terminal Barreiro"
+            "name": "BHtrans",
+            "address": "Belo Horizonte, MG"
         }
     }
     </script>
+
+    <link rel="stylesheet" href="global.css">
+    
 </head>
 <body class="bg-background text-foreground">
-     Header 
-    <header class="bg-primary text-primary-foreground shadow-lg">
-        <div class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <a href="index.html" class="hover:text-secondary transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                    </a>
-                    <div>
-                        <h1 class="text-xl font-bold">Linha 5104</h1>
-                        <p class="text-sm opacity-90">Centro / Barreiro</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <button id="favorite-btn" class="p-2 rounded-lg hover:bg-primary/80 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
-                    <button id="export-btn" class="bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors">
-                        Exportar
-                    </button>
-                </div>
-            </div>
+
+    <header class="py-6 px-4 md:px-6 bg-card">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="/" class="flex items-center">
+                <img src="images/logo.svg" alt="Logo BH Ônibus" class="w-8 h-8 md:w-10 md:h-10">
+                <span class="ml-2 font-bold text-xl md:text-2xl">BH Ônibus</span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="admin.html" class="hover:text-primary transition-colors">Admin</a>
+            </nav>
+            <button id="mobile-menu-btn" class="md:hidden text-foreground hover:text-primary transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
         </div>
     </header>
 
-     Line Status 
-    <div class="bg-green-50 border-l-4 border-green-500 p-4">
-        <div class="container mx-auto">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="font-medium text-green-800">Linha em operação normal</span>
-                    <span class="text-sm text-green-600">Última atualização: há 3 minutos</span>
-                </div>
-                <div class="text-sm text-green-600">
-                    Próximo ônibus: <span class="font-medium">8 minutos</span>
-                </div>
+    <main class="container mx-auto px-4 md:px-6 py-12">
+        <div id="line-info-container" class="space-y-8">
+            <div class="text-center">
+                <span id="line-operator-display" class="inline-block px-3 py-1 text-sm font-semibold rounded-full bg-blue-500/20 text-blue-400"></span>
+                <h1 class="text-4xl md:text-5xl font-extrabold mt-2">
+                    <span id="line-number-display"></span> - <span id="line-name-display"></span>
+                </h1>
             </div>
-        </div>
-    </div>
 
-     Main Content 
-    <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-             Left Column - Line Details 
-            <div class="lg:col-span-2 space-y-6">
-                 Basic Info 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h2 class="text-2xl font-bold mb-4 text-card-foreground">Informações da Linha</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
+                        <h2 class="text-xl md:text-2xl font-bold mb-4">Itinerário</h2>
+                        <div id="line-map" class="w-full h-80 bg-gray-700 rounded-lg">
+                            </div>
+                    </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="font-semibold mb-3 text-card-foreground">Horários de Operação</h3>
-                            <div class="space-y-2">
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Primeiro ônibus:</span>
-                                    <span class="font-medium">05:30</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Último ônibus:</span>
-                                    <span class="font-medium">23:45</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Frequência média:</span>
-                                    <span class="font-medium">15-20 min</span>
-                                </div>
+                    <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
+                        <h2 class="text-xl md:text-2xl font-bold mb-4">Horários</h2>
+                        <div id="line-schedules" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             </div>
-                        </div>
-                        
-                        <div>
-                            <h3 class="font-semibold mb-3 text-card-foreground">Características</h3>
-                            <div class="space-y-2">
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Extensão:</span>
-                                    <span class="font-medium">28,5 km</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Tempo de viagem:</span>
-                                    <span class="font-medium">~65 min</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-muted-foreground">Acessibilidade:</span>
-                                    <span class="font-medium text-green-600">✓ Disponível</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
-                 Route Map 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h2 class="text-2xl font-bold mb-4 text-card-foreground">Mapa do Trajeto</h2>
-                    <div class="bg-muted rounded-lg h-64 flex items-center justify-center">
-                        <div class="text-center text-muted-foreground">
-                            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                            </svg>
-                            <p>Mapa interativo será carregado aqui</p>
-                            <button class="mt-2 text-primary hover:text-primary/80">Carregar Mapa</button>
-                        </div>
-                    </div>
-                </div>
-
-                 Bus Stops 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h2 class="text-2xl font-bold mb-4 text-card-foreground">Pontos de Parada</h2>
-                    
-                    <div class="space-y-4 max-h-96 overflow-y-auto">
-                        <div class="flex items-center space-x-4 p-3 bg-background rounded-lg">
-                            <div class="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-bold">
-                                1
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-medium">Terminal Centro</h4>
-                                <p class="text-sm text-muted-foreground">Av. Afonso Pena, 1212</p>
-                            </div>
-                            <div class="text-sm text-muted-foreground">
-                                Próximo: 8 min
-                            </div>
-                        </div>
+                <div class="space-y-8">
+                    <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
+                        <h3 class="text-xl font-bold mb-4 text-card-foreground">Ações Rápidas</h3>
                         
-                        <div class="flex items-center space-x-4 p-3 bg-background rounded-lg">
-                            <div class="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-bold">
-                                2
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-medium">Praça Sete</h4>
-                                <p class="text-sm text-muted-foreground">Av. Amazonas, 89</p>
-                            </div>
-                            <div class="text-sm text-muted-foreground">
-                                Próximo: 12 min
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4 p-3 bg-background rounded-lg">
-                            <div class="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-bold">
-                                3
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-medium">Rodoviária</h4>
-                                <p class="text-sm text-muted-foreground">Praça Rio Branco, s/n</p>
-                            </div>
-                            <div class="text-sm text-muted-foreground">
-                                Próximo: 15 min
-                            </div>
-                        </div>
-                        
-                         More stops... 
-                        <div class="text-center pt-4">
-                            <button class="text-primary hover:text-primary/80 text-sm">
-                                Ver todos os 45 pontos
+                        <div class="space-y-3">
+                            <button class="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
+                                Definir Alerta
+                            </button>
+                            <button class="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90 transition-colors">
+                                Compartilhar Linha
+                            </button>
+                            <button class="w-full border border-border py-2 px-4 rounded-lg hover:bg-muted transition-colors">
+                                Reportar Problema
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-             Right Column - Sidebar 
-            <div class="space-y-6">
-                 Real-time Updates 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h3 class="text-xl font-bold mb-4 text-card-foreground">Tempo Real</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                            <div>
-                                <div class="font-medium text-green-800">Ônibus #4521</div>
-                                <div class="text-sm text-green-600">Chegando em 8 min</div>
-                            </div>
-                            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                            <div>
-                                <div class="font-medium text-blue-800">Ônibus #4522</div>
-                                <div class="text-sm text-blue-600">Chegando em 23 min</div>
-                            </div>
-                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <div>
-                                <div class="font-medium text-gray-800">Ônibus #4523</div>
-                                <div class="text-sm text-gray-600">Chegando em 38 min</div>
-                            </div>
-                            <div class="w-3 h-3 bg-gray-500 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-
-                 Alerts 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h3 class="text-xl font-bold mb-4 text-card-foreground">Avisos</h3>
-                    
-                    <div class="space-y-3">
-                        <div class="p-3 bg-yellow-50 border-l-4 border-yellow-400 rounded">
-                            <div class="text-sm font-medium text-yellow-800">Desvio temporário</div>
-                            <div class="text-xs text-yellow-600 mt-1">
-                                Obras na Av. Amazonas até 15/12
-                            </div>
-                        </div>
-                        
-                        <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
-                            <div class="text-sm font-medium text-blue-800">Horário especial</div>
-                            <div class="text-xs text-blue-600 mt-1">
-                                Domingo: operação reduzida
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                 Quick Actions 
-                <div class="bg-card rounded-xl p-6 shadow-lg border border-border">
-                    <h3 class="text-xl font-bold mb-4 text-card-foreground">Ações Rápidas</h3>
-                    
-                    <div class="space-y-3">
-                        <button class="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 transition-colors">
-                            Definir Alerta
-                        </button>
-                        <button class="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90 transition-colors">
-                            Compartilhar Linha
-                        </button>
-                        <button class="w-full border border-border py-2 px-4 rounded-lg hover:bg-muted transition-colors">
-                            Reportar Problema
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
+        
+        <div id="line-not-found" class="hidden text-center mt-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-red-400 mb-4">Linha não encontrada</h2>
+            <p class="text-lg text-gray-400">Verifique o número da linha e tente novamente.</p>
+        </div>
+    </main>
 
-     Footer 
-    <footer class="bg-primary text-primary-foreground py-8 mt-12">
+    <footer class="bg-gray-900 text-gray-300 py-12 mt-12">
         <div class="container mx-auto px-4 text-center">
             <p class="text-sm opacity-80">
-                &copy; 2024 BHTrans Horários. Dados fornecidos pela BHTrans. Sistema não oficial.
+                &copy; <span id="current-year">2024</span> BH Ônibus. Dados fornecidos pela BHTrans e DER-MG. Sistema não oficial.
             </p>
         </div>
     </footer>
-
-    <script src="js/linha.js"></script>
+    
+    <script type="module" src="js/bus-data.js"></script>
+    <script type="module" src="js/linha.js"></script>
 </body>
 </html>
