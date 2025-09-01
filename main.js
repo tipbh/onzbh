@@ -1,283 +1,339 @@
-// Main JavaScript for BHTrans website
-class BHTrans {
-  constructor() {
-    this.init()
-    this.setupEventListeners()
-    this.loadFavorites()
-    this.updateStats()
+/**
+ * Script principal para a página inicial do BH Ônibus
+ * Gerencia busca, sugestões, navegação e funcionalidades gerais
+ */
+
+// Importar a biblioteca Lucide
+import lucide from "lucide"
+
+// Variáveis globais
+let searchTimeout
+const searchInput = document.getElementById("search-input")
+const searchForm = document.getElementById("search-form")
+const suggestionsContainer = document.getElementById("suggestions")
+const mobileMenuBtn = document.getElementById("mobile-menu-btn")
+const mobileMenu = document.getElementById("mobile-menu")
+const popularLinesContainer = document.getElementById("popular-lines")
+
+/**
+ * Inicialização da página
+ */
+document.addEventListener("DOMContentLoaded", () => {
+  // Inicializar ícones Lucide
+  lucide.createIcons()
+
+  // Configurar ano atual no footer
+  updateCurrentYear()
+
+  // Configurar última atualização
+  updateLastUpdateTime()
+
+  // Carregar linhas populares
+  loadPopularLines()
+
+  // Configurar event listeners
+  setupEventListeners()
+
+  console.log("BH Ônibus - Página inicial carregada com sucesso")
+})
+
+/**
+ * Configurar todos os event listeners
+ */
+function setupEventListeners() {
+  // Event listener para busca
+  if (searchInput) {
+    searchInput.addEventListener("input", handleSearchInput)
+    searchInput.addEventListener("focus", handleSearchFocus)
+    searchInput.addEventListener("blur", handleSearchBlur)
   }
 
-  init() {
-    console.log("[v0] BHTrans system initialized")
-    this.searchInput = document.getElementById("search-input")
-    this.searchSuggestions = document.getElementById("search-suggestions")
-    this.mobileMenuBtn = document.getElementById("mobile-menu-btn")
-    this.mobileMenu = document.getElementById("mobile-menu")
-
-    // Sample bus lines data
-    this.busLines = [
-      { number: "5104", name: "Centro / Barreiro", route: "Via Av. Amazonas" },
-      { number: "9101", name: "Savassi / Pampulha", route: "Via Av. Antônio Carlos" },
-      { number: "2202", name: "BH Shopping / Centro", route: "Via Av. Raja Gabaglia" },
-      { number: "1205", name: "Eldorado / Centro", route: "Via Av. do Contorno" },
-      { number: "6401", name: "Venda Nova / Centro", route: "Via Av. Vilarinho" },
-      { number: "3301", name: "Betim / Centro", route: "Via BR-381" },
-      { number: "7102", name: "Ribeirão das Neves / Centro", route: "Via MG-010" },
-      { number: "4501", name: "Contagem / Centro", route: "Via Av. João César de Oliveira" },
-    ]
+  // Event listener para formulário de busca
+  if (searchForm) {
+    searchForm.addEventListener("submit", handleSearchSubmit)
   }
 
-  setupEventListeners() {
-    // Mobile menu toggle
-    if (this.mobileMenuBtn && this.mobileMenu) {
-      this.mobileMenuBtn.addEventListener("click", () => {
-        this.mobileMenu.classList.toggle("hidden")
-      })
-    }
-
-    // Search functionality
-    if (this.searchInput) {
-      this.searchInput.addEventListener("input", (e) => {
-        this.handleSearch(e.target.value)
-      })
-
-      this.searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          this.performSearch(e.target.value)
-        }
-      })
-
-      // Hide suggestions when clicking outside
-      document.addEventListener("click", (e) => {
-        if (!this.searchInput.contains(e.target) && !this.searchSuggestions.contains(e.target)) {
-          this.hideSuggestions()
-        }
-      })
-    }
-
-    // Favorite buttons
-    document.querySelectorAll(".favorite-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        this.toggleFavorite(e.target.closest(".line-card"))
-      })
-    })
+  // Event listener para menu mobile
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener("click", toggleMobileMenu)
   }
 
-  handleSearch(query) {
-    if (query.length < 2) {
-      this.hideSuggestions()
-      return
-    }
+  // Event listener para cliques fora do menu
+  document.addEventListener("click", handleOutsideClick)
 
-    const suggestions = this.busLines
-      .filter(
-        (line) =>
-          line.number.includes(query) ||
-          line.name.toLowerCase().includes(query.toLowerCase()) ||
-          line.route.toLowerCase().includes(query.toLowerCase()),
-      )
-      .slice(0, 5)
+  // Event listener para teclas de navegação
+  document.addEventListener("keydown", handleKeyNavigation)
+}
 
-    this.showSuggestions(suggestions)
+/**
+ * Manipular entrada de texto na busca
+ */
+function handleSearchInput(event) {
+  const query = event.target.value.trim()
+
+  // Limpar timeout anterior
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
   }
 
-  showSuggestions(suggestions) {
-    if (suggestions.length === 0) {
-      this.hideSuggestions()
-      return
-    }
-
-    const html = suggestions
-      .map(
-        (line) => `
-            <div class="suggestion-item p-3 hover:bg-muted cursor-pointer border-b border-border last:border-b-0" 
-                 data-line="${line.number}">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-primary text-primary-foreground px-2 py-1 rounded text-sm font-bold">
-                        ${line.number}
-                    </div>
-                    <div>
-                        <div class="font-medium">${line.name}</div>
-                        <div class="text-sm text-muted-foreground">${line.route}</div>
-                    </div>
-                </div>
-            </div>
-        `,
-      )
-      .join("")
-
-    this.searchSuggestions.innerHTML = html
-    this.searchSuggestions.classList.remove("hidden")
-
-    // Add click listeners to suggestions
-    this.searchSuggestions.querySelectorAll(".suggestion-item").forEach((item) => {
-      item.addEventListener("click", () => {
-        const lineNumber = item.dataset.line
-        this.goToLine(lineNumber)
-      })
-    })
-  }
-
-  hideSuggestions() {
-    if (this.searchSuggestions) {
-      this.searchSuggestions.classList.add("hidden")
-    }
-  }
-
-  performSearch(query) {
-    console.log("[v0] Performing search for:", query)
-
-    // Find exact match
-    const exactMatch = this.busLines.find(
-      (line) => line.number === query || line.name.toLowerCase() === query.toLowerCase(),
-    )
-
-    if (exactMatch) {
-      this.goToLine(exactMatch.number)
+  // Definir novo timeout para evitar muitas buscas
+  searchTimeout = setTimeout(() => {
+    if (query.length > 0) {
+      showSuggestions(query)
     } else {
-      // Show search results page or first suggestion
-      const suggestions = this.busLines.filter(
-        (line) => line.number.includes(query) || line.name.toLowerCase().includes(query.toLowerCase()),
-      )
-
-      if (suggestions.length > 0) {
-        this.goToLine(suggestions[0].number)
-      } else {
-        alert("Nenhuma linha encontrada para: " + query)
-      }
+      hideSuggestions()
     }
-  }
+  }, 300)
+}
 
-  goToLine(lineNumber) {
-    console.log("[v0] Navigating to line:", lineNumber)
-    window.location.href = `linha.html?line=${lineNumber}`
-  }
-
-  toggleFavorite(lineCard) {
-    const lineNumber = lineCard.dataset.line
-    const favorites = this.getFavorites()
-
-    if (favorites.includes(lineNumber)) {
-      this.removeFavorite(lineNumber)
-      lineCard.classList.remove("favorited")
-    } else {
-      this.addFavorite(lineNumber)
-      lineCard.classList.add("favorited")
-    }
-  }
-
-  getFavorites() {
-    return JSON.parse(localStorage.getItem("bhtrans_favorites") || "[]")
-  }
-
-  addFavorite(lineNumber) {
-    const favorites = this.getFavorites()
-    if (!favorites.includes(lineNumber)) {
-      favorites.push(lineNumber)
-      localStorage.setItem("bhtrans_favorites", JSON.stringify(favorites))
-    }
-  }
-
-  removeFavorite(lineNumber) {
-    const favorites = this.getFavorites()
-    const index = favorites.indexOf(lineNumber)
-    if (index > -1) {
-      favorites.splice(index, 1)
-      localStorage.setItem("bhtrans_favorites", JSON.stringify(favorites))
-    }
-  }
-
-  loadFavorites() {
-    const favorites = this.getFavorites()
-    document.querySelectorAll(".line-card").forEach((card) => {
-      const lineNumber = card.dataset.line
-      if (favorites.includes(lineNumber)) {
-        card.classList.add("favorited")
-      }
-    })
-  }
-
-  updateStats() {
-    // Simulate real-time updates
-    setInterval(() => {
-      const lastUpdate = document.getElementById("last-update")
-      if (lastUpdate) {
-        const minutes = Math.floor(Math.random() * 10) + 1
-        lastUpdate.textContent = `há ${minutes} minutos`
-      }
-
-      // Update active lines count
-      const activeLines = document.getElementById("active-lines")
-      if (activeLines) {
-        const count = 847 + Math.floor(Math.random() * 10) - 5
-        activeLines.textContent = count
-      }
-    }, 30000) // Update every 30 seconds
-  }
-
-  // Export functionality
-  exportLineData(lineNumber, format = "json") {
-    const lineData = this.busLines.find((line) => line.number === lineNumber)
-    if (!lineData) return
-
-    const data = {
-      line: lineData,
-      schedule: {
-        firstBus: "05:30",
-        lastBus: "23:45",
-        frequency: "15-20 min",
-      },
-      stops: [
-        { id: 1, name: "Terminal Centro", address: "Av. Afonso Pena, 1212" },
-        { id: 2, name: "Praça Sete", address: "Av. Amazonas, 89" },
-        { id: 3, name: "Rodoviária", address: "Praça Rio Branco, s/n" },
-      ],
-      lastUpdate: new Date().toISOString(),
-    }
-
-    if (format === "json") {
-      this.downloadFile(`linha_${lineNumber}.json`, JSON.stringify(data, null, 2))
-    } else if (format === "csv") {
-      const csv = this.convertToCSV(data)
-      this.downloadFile(`linha_${lineNumber}.csv`, csv)
-    }
-  }
-
-  convertToCSV(data) {
-    const headers = ["Ponto", "Nome", "Endereço"]
-    const rows = data.stops.map((stop) => [stop.id, stop.name, stop.address])
-
-    return [headers, ...rows].map((row) => row.join(",")).join("\n")
-  }
-
-  downloadFile(filename, content) {
-    const blob = new Blob([content], { type: "text/plain" })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
+/**
+ * Manipular foco no campo de busca
+ */
+function handleSearchFocus(event) {
+  const query = event.target.value.trim()
+  if (query.length > 0) {
+    showSuggestions(query)
   }
 }
 
-// Initialize the application
-document.addEventListener("DOMContentLoaded", () => {
-  new BHTrans()
-})
+/**
+ * Manipular perda de foco no campo de busca
+ */
+function handleSearchBlur(event) {
+  // Delay para permitir clique nas sugestões
+  setTimeout(() => {
+    hideSuggestions()
+  }, 200)
+}
 
-// Service Worker registration for offline functionality
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        console.log("[v0] SW registered: ", registration)
-      })
-      .catch((registrationError) => {
-        console.log("[v0] SW registration failed: ", registrationError)
-      })
-  })
+/**
+ * Manipular envio do formulário de busca
+ */
+function handleSearchSubmit(event) {
+  event.preventDefault()
+
+  const query = searchInput.value.trim()
+  if (!query) return
+
+  // Buscar linha correspondente
+  const results = window.BusData.searchLines(query)
+
+  if (results.length > 0) {
+    // Redirecionar para a primeira linha encontrada
+    window.location.href = `linha.html?id=${results[0].id}`
+  } else {
+    // Mostrar mensagem de não encontrado
+    showNotFoundMessage(query)
+  }
+}
+
+/**
+ * Mostrar sugestões de busca
+ */
+function showSuggestions(query) {
+  const results = window.BusData.searchLines(query)
+
+  if (results.length === 0) {
+    hideSuggestions()
+    return
+  }
+
+  // Limitar a 5 sugestões
+  const limitedResults = results.slice(0, 5)
+
+  // Gerar HTML das sugestões
+  const suggestionsHTML = limitedResults
+    .map(
+      (line) => `
+        <div class="suggestion-item" onclick="selectSuggestion('${line.id}')">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="font-semibold text-blue-400">${line.id}</span>
+                    <span class="ml-2 text-gray-100">${line.name}</span>
+                </div>
+                <span class="text-sm text-gray-400">${line.frequency}</span>
+            </div>
+            <div class="text-sm text-gray-400 mt-1">${line.route}</div>
+        </div>
+    `,
+    )
+    .join("")
+
+  suggestionsContainer.innerHTML = suggestionsHTML
+  suggestionsContainer.classList.remove("hidden")
+}
+
+/**
+ * Esconder sugestões de busca
+ */
+function hideSuggestions() {
+  if (suggestionsContainer) {
+    suggestionsContainer.classList.add("hidden")
+  }
+}
+
+/**
+ * Selecionar uma sugestão
+ */
+function selectSuggestion(lineId) {
+  window.location.href = `linha.html?id=${lineId}`
+}
+
+/**
+ * Mostrar mensagem de não encontrado
+ */
+function showNotFoundMessage(query) {
+  // Implementar modal ou toast de não encontrado
+  alert(`Nenhuma linha encontrada para "${query}". Tente buscar por número da linha, nome ou bairro.`)
+}
+
+/**
+ * Toggle do menu mobile
+ */
+function toggleMobileMenu() {
+  if (mobileMenu) {
+    mobileMenu.classList.toggle("hidden")
+
+    // Atualizar ícone do botão
+    const icon = mobileMenuBtn.querySelector("[data-lucide]")
+    if (mobileMenu.classList.contains("hidden")) {
+      icon.setAttribute("data-lucide", "menu")
+    } else {
+      icon.setAttribute("data-lucide", "x")
+    }
+
+    // Recriar ícones
+    lucide.createIcons()
+  }
+}
+
+/**
+ * Manipular cliques fora do menu
+ */
+function handleOutsideClick(event) {
+  // Fechar menu mobile se clicar fora
+  if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+    if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+      mobileMenu.classList.add("hidden")
+
+      // Resetar ícone
+      const icon = mobileMenuBtn.querySelector("[data-lucide]")
+      icon.setAttribute("data-lucide", "menu")
+      lucide.createIcons()
+    }
+  }
+
+  // Fechar sugestões se clicar fora
+  if (suggestionsContainer && !suggestionsContainer.classList.contains("hidden")) {
+    if (!suggestionsContainer.contains(event.target) && !searchInput.contains(event.target)) {
+      hideSuggestions()
+    }
+  }
+}
+
+/**
+ * Manipular navegação por teclado
+ */
+function handleKeyNavigation(event) {
+  // ESC para fechar sugestões e menu
+  if (event.key === "Escape") {
+    hideSuggestions()
+    if (mobileMenu && !mobileMenu.classList.contains("hidden")) {
+      toggleMobileMenu()
+    }
+  }
+}
+
+/**
+ * Carregar linhas populares
+ */
+function loadPopularLines() {
+  if (!popularLinesContainer) return
+
+  const popularLines = window.BusData.getPopularLines(6)
+
+  const linesHTML = popularLines
+    .map(
+      (line) => `
+        <div class="line-card" onclick="window.location.href='linha.html?id=${line.id}'">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-2xl font-bold text-blue-400">${line.id}</span>
+                <span class="text-sm text-gray-400">A cada ${line.frequency}</span>
+            </div>
+            <h4 class="font-semibold text-gray-100 mb-1">${line.name}</h4>
+            <p class="text-sm text-gray-400">${line.route}</p>
+            <div class="mt-2">
+                <span class="text-xs px-2 py-1 rounded-full ${getOperatorBadgeClass(line.operator)}">${line.operator}</span>
+            </div>
+        </div>
+    `,
+    )
+    .join("")
+
+  popularLinesContainer.innerHTML = linesHTML
+}
+
+/**
+ * Obter classe CSS para badge do operador
+ */
+function getOperatorBadgeClass(operator) {
+  switch (operator) {
+    case "BHTrans":
+      return "bg-blue-500/20 text-blue-400"
+    case "DER-MG":
+      return "bg-green-500/20 text-green-400"
+    default:
+      return "bg-gray-500/20 text-gray-400"
+  }
+}
+
+/**
+ * Atualizar ano atual no footer
+ */
+function updateCurrentYear() {
+  const currentYearElement = document.getElementById("current-year")
+  if (currentYearElement) {
+    currentYearElement.textContent = new Date().getFullYear()
+  }
+}
+
+/**
+ * Atualizar horário da última atualização
+ */
+function updateLastUpdateTime() {
+  const lastUpdateElement = document.getElementById("last-update")
+  if (lastUpdateElement) {
+    const now = new Date()
+    const dateStr = now.toLocaleDateString("pt-BR")
+    const timeStr = now.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    lastUpdateElement.textContent = `${dateStr} às ${timeStr}`
+  }
+}
+
+/**
+ * Função utilitária para debounce
+ */
+function debounce(func, wait) {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
+// Exportar funções para uso global se necessário
+if (typeof window !== "undefined") {
+  window.MainApp = {
+    selectSuggestion,
+    toggleMobileMenu,
+    updateCurrentYear,
+    updateLastUpdateTime,
+  }
 }
