@@ -65,7 +65,7 @@
                     <span class="ml-2 font-bold text-xl md:text-2xl">BH Ônibus</span>
                 </a>
             </div>
-            
+
             <nav class="hidden md:flex items-center space-x-6">
                 <a href="#" class="hover:text-primary transition-colors">Horários</a>
                 <a href="#" class="hover:text-primary transition-colors">Itinerários</a>
@@ -77,7 +77,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
             </button>
         </div>
-        
+
         <div id="mobile-menu" class="hidden md:hidden">
             <nav class="mt-4 px-4 space-y-2">
                 <a href="#" class="block py-2 text-foreground hover:bg-gray-800 transition-colors rounded">Horários</a>
@@ -99,22 +99,25 @@
             </p>
 
             <form id="search-form" class="relative max-w-xl mx-auto mb-12">
-                <div class="relative">
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        placeholder="Buscar por número da linha ou nome do bairro (ex: 5106, Savassi)" 
-                        class="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                        autocomplete="off"
-                    >
+                <div class="flex items-center bg-card border border-border rounded-lg text-lg focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bus"><path d="M19 17h2l.68-2.72a1 1 0 0 0-.44-1.25l-2.71-1.35a2 2 0 0 1-1.25-1.92V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v5.76a2 2 0 0 1-1.25 1.92L2.76 13a1 1 0 0 0-.44 1.25L3 17h2"/><path d="M19 17v-1a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v1"/><path d="M19 17H5"/><path d="M10 17v-2"/><path d="M14 17v-2"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
                     </div>
+                    <input
+                        type="text"
+                        id="search-input"
+                        placeholder="Buscar por número da linha ou nome do bairro (ex: 5106, Savassi)"
+                        class="w-full pl-12 pr-4 py-3 bg-transparent text-foreground rounded-lg focus:outline-none"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="p-2 mr-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </button>
                 </div>
-                <div id="suggestions-container" class="absolute z-10 w-full mt-1 hidden">
+                <div id="suggestions-container" class="absolute z-10 w-full mt-1 hidden bg-card border border-border rounded-lg shadow-lg">
                     </div>
             </form>
-            
+
             <div class="max-w-4xl mx-auto text-left">
                 <h2 class="text-2xl md:text-3xl font-bold mb-6">Linhas Populares</h2>
                 <div id="popular-lines" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
