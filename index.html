@@ -88,8 +88,9 @@
         </div>
     </header>
 
-    <main class="py-12 md:py-24">
-        <div class="container mx-auto px-4 md:px-6 text-center">
+    <main class="py-12 md:py-24 relative">
+        <div class="search-section"></div>
+        <div class="container mx-auto px-4 md:px-6 text-center search-content">
             <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
                 Consulte Linhas e Horários <br class="hidden sm:inline"> de Ônibus de BH
             </h1>
@@ -110,7 +111,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bus"><path d="M19 17h2l.68-2.72a1 1 0 0 0-.44-1.25l-2.71-1.35a2 2 0 0 1-1.25-1.92V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v5.76a2 2 0 0 1-1.25 1.92L2.76 13a1 1 0 0 0-.44 1.25L3 17h2"/><path d="M19 17v-1a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v1"/><path d="M19 17H5"/><path d="M10 17v-2"/><path d="M14 17v-2"/><path d="M8 10h.01"/><path d="M16 10h.01"/></svg>
                     </div>
                 </div>
-                <div id="suggestions-container" class="absolute z-10 w-full bg-card border border-border mt-1 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden">
+                <div id="suggestions-container" class="absolute z-10 w-full mt-1 hidden">
                     </div>
             </form>
             
