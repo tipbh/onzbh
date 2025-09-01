@@ -3,7 +3,7 @@
  * Gerencia busca, sugestões, navegação e funcionalidades gerais
  */
 
-// Importar a biblioteca Lucide
+// Importa a biblioteca Lucide e o módulo de dados das linhas
 import lucide from "lucide";
 import { BusData } from "./bus-data.js";
 
@@ -11,6 +11,7 @@ import { BusData } from "./bus-data.js";
 let searchTimeout;
 const searchInput = document.getElementById("search-input");
 const searchForm = document.getElementById("search-form");
+// ID corrigido para 'suggestions-container' para coincidir com o HTML
 const suggestionsContainer = document.getElementById("suggestions-container");
 const mobileMenuBtn = document.getElementById("mobile-menu-btn");
 const mobileMenu = document.getElementById("mobile-menu");
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
  * Configurar todos os event listeners
  */
 function setupEventListeners() {
-  // Event listener para busca
+  // Event listener para busca com debounce para evitar múltiplas chamadas rápidas
   if (searchInput) {
     searchInput.addEventListener("input", debounce(handleSearchInput, 300));
     searchInput.addEventListener("focus", handleSearchFocus);
@@ -75,6 +76,7 @@ function handleSearchInput(event) {
     renderSuggestions(results);
     suggestionsContainer.style.display = "block";
   } else {
+    // Esconde as sugestões se o campo estiver vazio
     suggestionsContainer.style.display = "none";
   }
 }
@@ -92,6 +94,7 @@ function handleSearchFocus() {
  * Lidar com a perda de foco no campo de busca
  */
 function handleSearchBlur() {
+  // Timeout para permitir o clique em uma sugestão antes de esconder
   setTimeout(() => {
     suggestionsContainer.style.display = "none";
   }, 200);
@@ -104,6 +107,7 @@ function handleSearchSubmit(event) {
   event.preventDefault();
   const query = searchInput.value.trim();
   if (query.length > 0) {
+    // Redireciona para a página da linha com o número na URL
     window.location.href = `linha.html?line=${encodeURIComponent(query)}`;
   }
 }
@@ -115,6 +119,7 @@ function handleSuggestionClick(event) {
   const suggestionItem = event.target.closest(".suggestion-item");
   if (suggestionItem) {
     const lineNumber = suggestionItem.dataset.lineNumber;
+    // Redireciona para a página da linha
     window.location.href = `linha.html?line=${encodeURIComponent(lineNumber)}`;
   }
 }
