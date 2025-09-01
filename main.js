@@ -131,7 +131,7 @@ function renderSuggestions(lines) {
   if (!suggestionsContainer) return;
   
   const suggestionsHTML = lines.map(line => `
-    <li class="suggestion-item" data-line-number="${line.shortName}">
+    <li class="suggestion-item p-3 border-b border-gray-800 hover:bg-white/5 cursor-pointer" data-line-number="${line.shortName}">
       <span class="font-bold">${line.shortName}</span> - ${line.longName}
     </li>
   `).join("");
