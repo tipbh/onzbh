@@ -4,7 +4,7 @@
  */
 
 // Importa os arquivos GeoJSON. O "assert" é necessário para importar como um JSON.
-// Verifique se os nomes dos arquivos estão corretos: routes.geojson e trips.geojson
+// Nomes de arquivos corrigidos
 import routesGeoJSON from './routes.geojson' assert { type: 'json' };
 import tripsGeoJSON from './trips.geojson' assert { type: 'json' };
 
@@ -67,7 +67,7 @@ export const BusData = {
         return (
           // Busca tanto no nome curto (número) quanto no nome longo
           route_short_name.toLowerCase().includes(lowerCaseQuery) ||
-          route_long_name.toLowerCase().includes(lowerCaseQuery)
+          (route_long_name && route_long_name.toLowerCase().includes(lowerCaseQuery))
         );
       })
       .map(feature => {
@@ -83,6 +83,7 @@ export const BusData = {
   // Linhas populares (simulação de mais buscadas)
   getPopularLines(limit = 6) {
     const popularNumbers = ["1502", "8207", "9206", "3051", "5102", "6101"];
+    // Mapeia os números populares para os dados completos da linha
     return popularNumbers
       .map(num => this.getLineData(num))
       .filter(line => line !== null)
