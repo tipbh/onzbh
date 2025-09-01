@@ -3,8 +3,8 @@
  * Base de dados completa e atualizada via GeoJSON
  */
 
-import routesGeoJSON from './routes-geojson.json' assert { type: 'json' };
-import tripsGeoJSON from './geojson-trips.json' assert { type: 'json' };
+import routesGeoJSON from './routes.geojson' assert { type: 'json' };
+import tripsGeoJSON from './trips.geojson' assert { type: 'json' };
 
 export const BusData = {
   // Retorna todas as rotas
@@ -20,7 +20,7 @@ export const BusData = {
   // Retorna uma rota pelo número da linha
   getRouteByNumber(lineNumber) {
     return routesGeoJSON.features.find(
-      route => route.properties.route_number === lineNumber
+      route => route.properties.route.route_short_name === lineNumber
     );
   },
 
@@ -40,90 +40,46 @@ export const BusData = {
 
     return {
       number: lineNumber,
-      name: route.properties.name,
-      routeDescription: route.properties.description || "",
-      stops: route.properties.stops || [],
+      name: route.properties.route.route_long_name,
+      shortName: route.properties.route.route_short_name,
+      operator: route.properties.route.agency_id === "37926" ? "BHTrans" : "DER-MG",
+      stops: route.properties.route.stops || [],
       trips: trips.map(trip => ({
         id: trip.properties.id,
         departure: trip.properties.departure,
         arrival: trip.properties.arrival,
-        status: trip.properties.status || "ontime"
-      }))
+      })),
     };
   },
-
-  // Buscar linhas por termo (id, nome, operador, rota)
-  searchLines(term) {
-    if (!term || term.length < 1) return [];
-
-    const lower = term.toLowerCase().trim();
-
+  
+  // Função de busca que retorna linhas com base no número ou nome
+  searchLines(query) {
+    const lowerCaseQuery = query.toLowerCase();
     return routesGeoJSON.features
-      .filter(route =>
-        (route.properties.route_number || "").toLowerCase().includes(lower) ||
-        (route.properties.name || "").toLowerCase().includes(lower) ||
-        (route.properties.description || "").toLowerCase().includes(lower) ||
-        (route.properties.operator || "").toLowerCase().includes(lower)
-      )
-      .map(route => ({
-        id: route.properties.route_number,
-        name: route.properties.name,
-        route: route.properties.description,
-        operator: route.properties.operator,
-        type: route.properties.type || "urbana",
-      }));
-  },
-
-  // Pegar linha por ID (número da linha)
-  getLineById(lineId) {
-    const route = this.getRouteByNumber(lineId);
-    if (!route) return null;
-
-    return {
-      id: route.properties.route_number,
-      name: route.properties.name,
-      route: route.properties.description,
-      operator: route.properties.operator,
-      type: route.properties.type || "urbana",
-      stops: route.properties.stops || [],
-    };
+      .filter(feature => {
+        const { route_short_name, route_long_name } = feature.properties.route;
+        return (
+          route_short_name.toLowerCase().includes(lowerCaseQuery) ||
+          route_long_name.toLowerCase().includes(lowerCaseQuery)
+        );
+      })
+      .map(feature => {
+        const { route_short_name, route_long_name } = feature.properties.route;
+        return {
+          shortName: route_short_name,
+          longName: route_long_name,
+          id: route_short_name, // Usar o nome curto como ID para navegação
+        };
+      });
   },
 
   // Linhas populares (simulação de mais buscadas)
   getPopularLines(limit = 6) {
-    const popularIds = ["1001", "2101", "3101", "5101", "6101", "7001"];
-    return popularIds
-      .map(id => this.getLineById(id))
+    const popularNumbers = ["1502", "8207", "9206", "3051", "5102", "6101"];
+    return popularNumbers
+      .map(num => this.getLineData(num))
       .filter(line => line !== null)
       .slice(0, limit);
   },
-
-  // Todas as linhas de um operador específico
-  getLinesByOperator(operator) {
-    return routesGeoJSON.features
-      .filter(route => route.properties.operator === operator)
-      .map(route => ({
-        id: route.properties.route_number,
-        name: route.properties.name,
-        route: route.properties.description,
-        type: route.properties.type || "urbana",
-      }));
-  },
-
-  // Todas as linhas de um tipo específico
-  getLinesByType(type) {
-    return routesGeoJSON.features
-      .filter(route => (route.properties.type || "urbana") === type)
-      .map(route => ({
-        id: route.properties.route_number,
-        name: route.properties.name,
-        route: route.properties.description,
-        operator: route.properties.operator,
-      }));
-  },
+  
 };
-
-// Para compatibilidade global (caso queira usar via window)
-if (typeof window !== "undefined") {
-  window.BusData = BusData;
-}
