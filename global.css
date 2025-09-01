@@ -1,18 +1,18 @@
-/* 
+/*
  * Estilos customizados para o site BH Ônibus
  * Tema escuro com base #0a0a0a e variações para contraste
  */
 
-/* Configuração do tema escuro */
+/* Configuração do tema escuro com variáveis CSS para fácil ajuste */
 :root {
-  --bg-primary: #0a0a0a; /* Fundo principal */
-  --bg-secondary: #1a1a1a; /* Fundo secundário */
-  --bg-tertiary: #2a2a2a; /* Fundo terciário */
-  --text-primary: #ffffff; /* Texto principal */
-  --text-secondary: #b3b3b3; /* Texto secundário */
-  --text-muted: #666666; /* Texto esmaecido */
-  --accent-blue: #3b82f6; /* Azul de destaque */
-  --accent-blue-hover: #2563eb; /* Azul hover */
+  --bg-primary: #0a0a0a; /* Fundo principal escuro */
+  --bg-secondary: #1a1a1a; /* Fundo secundário para cards e seções */
+  --bg-tertiary: #2a2a2a; /* Fundo para itens em hover */
+  --text-primary: #ffffff; /* Texto principal branco */
+  --text-secondary: #b3b3b3; /* Texto secundário para descrições */
+  --text-muted: #666666; /* Texto esmaecido, cinza */
+  --accent-blue: #3b82f6; /* Azul de destaque para botões e links */
+  --accent-blue-hover: #2563eb; /* Azul para o estado hover */
   --border-color: #333333; /* Cor das bordas */
   --shadow-color: rgba(0, 0, 0, 0.5); /* Cor das sombras */
 }
@@ -26,8 +26,8 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--bg-primary); /* Fundo do corpo usando a variável */
+  color: var(--text-primary); /* Cor do texto do corpo */
   line-height: 1.6;
 }
 
@@ -35,79 +35,56 @@ body {
 @keyframes float {
   0%,
   100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-10px) rotate(1deg);
-  }
-  66% {
-    transform: translateY(5px) rotate(-1deg);
-  }
-}
-
-@keyframes float-delayed {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-15px) rotate(-1deg);
-  }
-  66% {
-    transform: translateY(8px) rotate(1deg);
-  }
-}
-
-@keyframes pulse-slow {
-  0%,
-  100% {
-    opacity: 0.3;
+    transform: translateY(0);
   }
   50% {
-    opacity: 0.6;
+    transform: translateY(-5px);
   }
 }
 
-/* Classes de animação */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* Estilo para a seção de busca com imagem de fundo */
+.search-section {
+  position: relative;
+  background-image: url('https://images.unsplash.com/photo-1549419163-95568194413f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* URL da imagem de fundo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(0.6); /* Escurece a imagem para melhor contraste com o texto */
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.animate-float-delayed {
-  animation: float-delayed 6s ease-in-out infinite;
-  animation-delay: 2s;
+.search-content {
+  position: relative;
+  z-index: 1;
 }
 
-.animate-pulse-slow {
-  animation: pulse-slow 4s ease-in-out infinite;
-}
-
-/* Estilos para cards de linha */
-.line-card {
+/* Estilos para a lista de sugestões */
+#suggestions-container {
+  max-height: 250px; /* Limita a altura da lista */
+  overflow-y: auto; /* Adiciona scroll se a lista for muito longa */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -1px var(--shadow-color);
   background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
 }
 
-.line-card:hover {
-  background-color: var(--bg-tertiary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-/* Estilos para sugestões de busca */
 .suggestion-item {
+  display: block;
+  width: 100%;
   padding: 0.75rem 1rem;
+  color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
 .suggestion-item:hover {
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-tertiary); /* Fundo terciário no hover */
 }
 
 .suggestion-item:last-child {
@@ -127,77 +104,5 @@ body {
 
   .grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Estilos para loading states */
-.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.loading::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  margin: -10px 0 0 -10px;
-  border: 2px solid var(--accent-blue);
-  border-radius: 50%;
-  border-top-color: transparent;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Estilos para status das linhas */
-.status-active {
-  color: #10b981;
-}
-
-.status-delayed {
-  color: #f59e0b;
-}
-
-.status-inactive {
-  color: #ef4444;
-}
-
-/* Melhorias de acessibilidade */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Focus states para acessibilidade */
-button:focus,
-input:focus,
-a:focus {
-  outline: 2px solid var(--accent-blue);
-  outline-offset: 2px;
-}
-
-/* Estilos para impressão */
-@media print {
-  .no-print {
-    display: none !important;
-  }
-
-  body {
-    background: white !important;
-    color: black !important;
   }
 }
