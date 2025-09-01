@@ -3,6 +3,8 @@
  * Base de dados completa e atualizada via GeoJSON
  */
 
+// Importa os arquivos GeoJSON. O "assert" é necessário para importar como um JSON.
+// Verifique se os nomes dos arquivos estão corretos: routes.geojson e trips.geojson
 import routesGeoJSON from './routes.geojson' assert { type: 'json' };
 import tripsGeoJSON from './trips.geojson' assert { type: 'json' };
 
@@ -18,6 +20,7 @@ export const BusData = {
   },
 
   // Retorna uma rota pelo número da linha
+  // Corrigido para buscar na propriedade `route.route_short_name` do GeoJSON
   getRouteByNumber(lineNumber) {
     return routesGeoJSON.features.find(
       route => route.properties.route.route_short_name === lineNumber
@@ -42,6 +45,7 @@ export const BusData = {
       number: lineNumber,
       name: route.properties.route.route_long_name,
       shortName: route.properties.route.route_short_name,
+      // Acessa o operador corretamente
       operator: route.properties.route.agency_id === "37926" ? "BHTrans" : "DER-MG",
       stops: route.properties.route.stops || [],
       trips: trips.map(trip => ({
@@ -53,12 +57,15 @@ export const BusData = {
   },
   
   // Função de busca que retorna linhas com base no número ou nome
+  // Lógica de busca corrigida para usar as propriedades corretas do GeoJSON
   searchLines(query) {
     const lowerCaseQuery = query.toLowerCase();
     return routesGeoJSON.features
       .filter(feature => {
+        // Acessa as propriedades corretamente
         const { route_short_name, route_long_name } = feature.properties.route;
         return (
+          // Busca tanto no nome curto (número) quanto no nome longo
           route_short_name.toLowerCase().includes(lowerCaseQuery) ||
           route_long_name.toLowerCase().includes(lowerCaseQuery)
         );
